@@ -1,0 +1,29 @@
+version: '3'
+services:
+  docker-skeleton-php-80-cli-alpine:
+    container_name: docker-skeleton-php-80-cli-alpine
+    restart: 'no'
+    stdin_open: true
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
+    build:
+      context: php
+      args:
+        - UID=${UID}
+    working_dir: /skeleton-src
+    volumes:
+      - ./src/:/skeleton-src
+      - ${SSH_AUTH_SOCK}:/ssh-agent
+    entrypoint: [
+        "/bin/sh",
+        "-c",
+        "echo 'User info:' && id &&
+         echo 'SSH info:' && ssh-add -l &&
+         /bin/sh"
+    ]
+    networks:
+      - docker-skeleton-php-80-cli-alpine-network
+
+networks:
+  docker-skeleton-php-80-cli-alpine-network:
+    driver: bridge
